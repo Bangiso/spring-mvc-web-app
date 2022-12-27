@@ -11,8 +11,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class StudentsDao implements StudentsService {
@@ -29,12 +31,11 @@ public class StudentsDao implements StudentsService {
             int result = jdbcTemplate.update(sql, student.getId(), student.getName(), student.getGpa());
             if (result > 0) {
                 logger.info("new student added");
-            }
-            else {
+            } else {
                 logger.warn("Unable to add new student.");
             }
-        } catch (Throwable ex){
-            if( ex instanceof DuplicateKeyException){
+        } catch (Throwable ex) {
+            if (ex instanceof DuplicateKeyException) {
                 logger.error("Unable to add new student, student already exist!");
                 return 501;
             } else {
@@ -66,6 +67,7 @@ public class StudentsDao implements StudentsService {
             return save(student);
         }
     }
+
     @Override
     public int deleteStudent(int id) {
         String sql = "DELETE FROM students WHERE id = ?";
@@ -81,16 +83,42 @@ public class StudentsDao implements StudentsService {
         try {
             String sql = "SELECT * FROM students WHERE id = ?";
             return Optional.ofNullable(
-                    (Student)  jdbcTemplate
+                    (Student) jdbcTemplate
                             .queryForObject(
                                     sql,
                                     new Object[]{id},
                                     new BeanPropertyRowMapper(Student.class)
                             ));
-        } catch (EmptyResultDataAccessException ex){
+        } catch (EmptyResultDataAccessException ex) {
             logger.info("No student found with id " + id);
-            return null;
+            return Optional.empty();
         }
     }
 
+    @Override
+    public List<Student> filterByNameOrId(String keyword) {
+        Integer id;
+        try {id = Integer.parseInt(keyword);}
+        catch (NumberFormatException ex) {id = null;}
+
+        if (id!=null) { return toStudentList(id);}
+        else {
+            List<Student> students = fetchStudents().stream()
+                    .filter(student -> student.getName().toLowerCase().contains(keyword.toLowerCase()))
+                    .collect(Collectors.toList());
+            if(students.isEmpty()){
+                logger.info("No student found with name containing " + keyword);
+            }
+            return students;
+        }
+    }
+
+    private List<Student> toStudentList(int id) {
+        List<Student> students = new ArrayList<>();
+        Optional<Student> studentOpt = findById(id);
+        if (studentOpt.isPresent()) {
+            students.add(studentOpt.get());
+        }
+        return students;
+    }
 }

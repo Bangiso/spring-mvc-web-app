@@ -16,20 +16,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/students">Home</a>
+                            <a class="nav-link text-dark" href="/">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/students">Student list</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark"   href="/student">Add student</a>
+                            <a class="nav-link text-dark"   href="/students/add">Add student</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark">Privacy</a>
+                            <a class="nav-link text-dark" href="/privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <form  class="nav-link text-dark">
-                                <label for="keyword"></label>
+                            <form  class="nav-link text-dark" action="#" method="post" th:action="@{/students/search-results}">
                                 <input type="text" name="keyword" placeholder="Search..." >
                                 <button type="submit">Search</button>
                             </form >

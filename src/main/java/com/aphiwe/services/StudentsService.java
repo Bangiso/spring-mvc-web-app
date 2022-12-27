@@ -13,4 +13,5 @@ public interface StudentsService {
     public int updateStudent(Student student);
     public int deleteStudent(int id);
     public Optional<Student> findById(int id);
+    public List<Student> filterByNameOrId(String keyword);
 }
