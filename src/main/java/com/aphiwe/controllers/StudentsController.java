@@ -21,50 +21,57 @@ public class StudentsController {
         this.studentsService = studentsService;
     }
 
-    @GetMapping
-    private String index(Model model) {
-        return "index";
-    }
-
     @GetMapping("/students")
     private String getStudents(Model model) {
         model.addAttribute("students", studentsService.fetchStudents());
-        return "students";
+        return "students/students";
     }
 
     @GetMapping("/students/{id}")
     private String getStudent(@PathVariable int id, Model model) {
         model.addAttribute("student", studentsService.findById(id).get());
-        return "student";
+        return "students/student";
     }
 
-    @RequestMapping(value = "/student", method = RequestMethod.GET)
+    @RequestMapping(value = "/students/add", method = RequestMethod.GET)
     public ModelAndView student() {
-        return new ModelAndView("create", "command", new Student());
+        return new ModelAndView("students/create", "command", new Student());
+    }
+    @RequestMapping(value = "/students/update", method = RequestMethod.POST)
+    public String studentUpdate(@ModelAttribute Student student, ModelMap model) {
+        model.addAttribute("student", student);
+        return "students/update_student";
     }
 
-    @PostMapping("/addStudent")
+    @PostMapping("/students/addStudent")
     private String addStudent(@ModelAttribute Student student, ModelMap model) {
         logger.info("Adding student [id: " + student.getId() + " name: " + student.getName() + " gpa: " + student.getGpa() + "]");
         int ret = studentsService.save(student);
         if(ret==501){
-            return "duplicate_error";
+            return "students/duplicate_error";
         } else if (ret==502) {
-            return "error";
+            return "students/error";
         }
         model.addAttribute("students", studentsService.fetchStudents());
-        return "students";
+        return "students/students";
     }
 
-    @PutMapping
-    public @ResponseBody
-    int updateStudent(@RequestBody Student student) {
-        return studentsService.updateStudent(student);
+    @PostMapping("/students/update-successful")
+    public String updateStudent(@ModelAttribute Student student) {
+         studentsService.updateStudent(student);
+         return "students/update_success";
     }
 
-    @DeleteMapping("/{id}")
-    public @ResponseBody
-    int deleteStudent(@PathVariable int id) {
-        return studentsService.deleteStudent(id);
+    @PostMapping("/students/remove/{id}")
+    public String deleteStudent(@PathVariable int id) {
+        logger.info("Removing student with id = "+id);
+        studentsService.deleteStudent(id);
+        return "students/delete_success";
+    }
+    @PostMapping("/students/search-results")
+    public String searchStudent(String keyword, Model model) {
+        logger.info("looking for student with name : "+keyword);
+        model.addAttribute("students", studentsService.filterByNameOrId(keyword));
+        return "students/students";
     }
 }
