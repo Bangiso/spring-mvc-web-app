@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="head">
+        <title>Home page</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link th:href="@{/css/site.css}" rel="stylesheet" />
+        <link th:href="@{/css/site2.css}" rel="stylesheet" />
+    </head>
+    <body>
+
+    <header th:fragment="header">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" >Spring MVC App</a>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/students">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/students">Student list</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark"   href="/student">Add student</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <form  class="nav-link text-dark">
+                                <label for="keyword"></label>
+                                <input type="text" name="keyword" placeholder="Search..." >
+                                <button type="submit">Search</button>
+                            </form >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <footer th:fragment="footer">
+        <div class="container">
+            &copy; 2022 - Spring MVC App
+        </div>
+    </footer>
+
+    </body>
+</html>
